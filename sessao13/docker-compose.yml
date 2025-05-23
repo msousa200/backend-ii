@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  django-hello:
+    build:
+      context: ./django_hello
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    environment:
+      - DEBUG=0
+      - ALLOWED_HOSTS=*
+      - SECRET_KEY=docker-compose-secret-key-for-development-only
+    volumes:
+      - ./django_hello:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/hello/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  fastapi-hello:
+    build:
+      context: ./fastapi_hello
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    environment:
+      - APP_ENV=production
+      - LOGGING_LEVEL=INFO
+    volumes:
+      - ./fastapi_hello:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  challenge-app:
+    build:
+      context: ./challenge/refactored
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      - APP_ENV=production
+      - ALLOW_ORIGINS=*
+    volumes:
+      - ./challenge/refactored:/app
+      - products_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  products_data:

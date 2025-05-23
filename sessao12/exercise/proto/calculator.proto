@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package calculator;
+
+// Define a calculator service that calculates the cube of a number
+service Calculator {
+    // Calculate the cube of the given number
+    rpc CalculateCube (CubeRequest) returns (CubeReply) {}
+}
+
+// The request containing the number to calculate the cube
+message CubeRequest {
+    int32 number = 1;
+}
+
+// The response containing the cube result
+message CubeReply {
+    int32 result = 1;
+}

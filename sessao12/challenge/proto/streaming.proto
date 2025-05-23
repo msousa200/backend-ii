@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package streaming;
+
+// Define a streaming service
+service StreamService {
+    // Stream numbers from start to end
+    rpc StreamNumbers (StreamRequest) returns (stream StreamReply) {}
+}
+
+// The request containing the range for streaming numbers
+message StreamRequest {
+    int32 start = 1;
+    int32 end = 2;
+}
+
+// The response containing a single number in the stream
+message StreamReply {
+    int32 number = 1;
+    string message = 2;
+}
